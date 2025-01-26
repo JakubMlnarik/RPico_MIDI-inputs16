@@ -1,0 +1,176 @@
+<!-- https://www.sanwebe.com/2014/08/css-html-forms-designs -->
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            .form-style{
+                width:480px;
+                padding:30px;
+                margin:40px auto;
+                background: #FFF;
+                border-radius: 10px;
+                -webkit-border-radius:10px;
+                -moz-border-radius: 10px;
+                box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
+                -moz-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
+                -webkit-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
+            }
+            .form-style .inner-wrap{
+                padding: 20px;
+                background: #F8F8F8;
+                border-radius: 6px;
+                margin-bottom: 15px;
+            }
+            .form-style h1{
+                background: #2A88AD;
+                padding: 20px 30px 15px 30px;
+                margin: -30px -30px 30px -30px;
+                border-radius: 10px 10px 0 0;
+                -webkit-border-radius: 10px 10px 0 0;
+                -moz-border-radius: 10px 10px 0 0;
+                color: #fff;
+                text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.12);
+                font: normal 30px 'Bitter', serif;
+                -moz-box-shadow: inset 0px 2px 2px 0px rgba(255, 255, 255, 0.17);
+                -webkit-box-shadow: inset 0px 2px 2px 0px rgba(255, 255, 255, 0.17);
+                box-shadow: inset 0px 2px 2px 0px rgba(255, 255, 255, 0.17);
+                border: 1px solid #257C9E;
+            }
+            .form-style h1 > span{
+                display: block;
+                margin-top: 2px;
+                font: 13px Arial, Helvetica, sans-serif;
+            }
+            .form-style label{
+                display: block;
+                font: 13px Arial, Helvetica, sans-serif;
+                color: #888;
+                margin-bottom: 15px;
+            }
+            .form-style input[type="number"],
+            .form-style select {
+                display: block;
+                box-sizing: border-box;
+                -webkit-box-sizing: border-box;
+                -moz-box-sizing: border-box;
+                width: 100%;
+                padding: 8px;
+                border-radius: 6px;
+                -webkit-border-radius:6px;
+                -moz-border-radius:6px;
+                border: 2px solid #fff;
+                box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.33);
+                -moz-box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.33);
+                -webkit-box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.33);
+            }
+            .form-style .section{
+                font: normal 20px 'Bitter', serif;
+                color: #2A88AD;
+                margin-bottom: 5px;
+            }
+            .form-style input[type="submit"],
+            .form-style input[type="button"]{
+                background: #2A88AD;
+                padding: 8px 20px 8px 20px;
+                border-radius: 5px;
+                -webkit-border-radius: 5px;
+                -moz-border-radius: 5px;
+                color: #fff;
+                text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.12);
+                font: normal 30px 'Bitter', serif;
+                -moz-box-shadow: inset 0px 2px 2px 0px rgba(255, 255, 255, 0.17);
+                -webkit-box-shadow: inset 0px 2px 2px 0px rgba(255, 255, 255, 0.17);
+                box-shadow: inset 0px 2px 2px 0px rgba(255, 255, 255, 0.17);
+                border: 1px solid #257C9E;
+                font-size: 15px;
+            }
+            .form-style input[type="button"]{
+                float: right;
+            }
+            .form-style input[type="submit"]:hover,
+            .form-style input[type="button"]:hover{
+                background: #2A6881;
+                -moz-box-shadow: inset 0px 2px 2px 0px rgba(255, 255, 255, 0.28);
+                -webkit-box-shadow: inset 0px 2px 2px 0px rgba(255, 255, 255, 0.28);
+                box-shadow: inset 0px 2px 2px 0px rgba(255, 255, 255, 0.28);
+            }
+        </style>
+    </head>
+    <body>
+        <div class="form-style">
+            <h1>MIDI_scanner64<span>Firmware version: xxx</span></h1>
+            <form>
+                <div class="section">General</div>
+                <div class="inner-wrap">
+                    <label>
+                        MIDI serial bus rate
+                        <select name="fast_midi">
+                            <option value="0" > MIDI-compliant rate </option>
+                            <option value="1"> High speed (not compatible with third-party MIDI equipment) </option>
+                        </select>
+                    </label>
+                </div>
+            
+                <div class="section">Input header 1</div>
+                <div class="inner-wrap">
+                    <label> Midi channel <input type="number" name="in1_m_ch" min="1" max="16"> </label>
+                    <label> Base MIDI note (first input's MIDI note) <input type="number" name="in1_base_m" min="0" max="95"> </label>
+                    <label>
+                        Invert NOTE ON / NOTE OFF
+                        <select name="in1_inv">
+                            <option value="0" > NOTE ON when an input is activated </option>
+                            <option value="1"> NOTE ON when an input is deactivated </option>
+                        </select>
+                    </label>
+                </div>
+
+                <div class="section">Input header 2</div>
+                <div class="inner-wrap">
+                    <label> Midi channel <input type="number" name="in2_m_ch" min="1" max="16"> </label>
+                    <label> Base MIDI note (first input's MIDI note) <input type="number" name="in2_base_m" min="0" max="95"> </label>
+                    <label>
+                        Invert NOTE ON / NOTE OFF
+                        <select name="in2_inv">
+                            <option value="0" > NOTE ON when an input is activated </option>
+                            <option value="1"> NOTE ON when an input is deactivated </option>
+                        </select>
+                    </label>
+                </div>
+
+                <div class="section">Analog inputs</div>
+                <div class="inner-wrap">
+                    <label>
+                        A1
+                        <select name="a1_en">
+                            <option value="0" > Disabled </option>
+                            <option value="1"> Enabled </option>
+                        </select>
+                    </label>
+                    <label>
+                        A2
+                        <select name="a2_en">
+                            <option value="0" > Disabled </option>
+                            <option value="1"> Enabled </option>
+                        </select>
+                    </label>
+                    <label>
+                        A3
+                        <select name="a3_en">
+                            <option value="0" > Disabled </option>
+                            <option value="1"> Enabled </option>
+                        </select>
+                    </label>
+                </div>
+
+                <div class="button-section">
+                 <input type="submit" value="Save settings">
+                 <a href="?default=1">
+                    <input type="button" value="Set default values" />
+                 </a>
+                </div>
+
+            </form>
+        </div>
+    </body>
+</html>
+
