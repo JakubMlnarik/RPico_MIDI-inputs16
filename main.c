@@ -10,6 +10,8 @@
 ////////////////////////////
 SETTINGS main_settings;
 
+i2c_inst_t *i2c = I2C_BUS;
+
 struct State act_state;
 struct State last_state;
 
@@ -29,7 +31,7 @@ void tud_suspend_cb(bool remote_wakeup_en)
 
 // timer interrupt callback
 bool scan_timer_callback(struct repeating_timer *t) {
-    process_state(&act_state, &last_state, &main_settings, &cs_lock, &shared_buff);
+    process_state(&act_state, &last_state, &main_settings, &cs_lock, &shared_buff, i2c);
 
     // incremetning the LED timer every pass until the limit
     led_on_timer++;
@@ -55,58 +57,17 @@ void general_init() {
     // WIFI button pin
     gpio_init(WIFI_BUT);
     gpio_set_dir(WIFI_BUT, GPIO_IN);
+
+    // This will use i2c0 on the default SDA and SCL pins (GP4, GP5 on a Pico)
+    i2c_init(i2c, 100 * 1000);
+    gpio_set_function(I2C_SDA_PIN, GPIO_FUNC_I2C);
+    gpio_set_function(I2C_SCL_PIN, GPIO_FUNC_I2C);
+    gpio_pull_up(I2C_SDA_PIN);
+    gpio_pull_up(I2C_SCL_PIN);
 }
+
 void midi_init() {
-    // Initialize tone matrix outputs
-    gpio_init(M0);
-    gpio_set_dir(M0, GPIO_OUT);
-    gpio_put(M0, true);
-    gpio_init(M1);
-    gpio_set_dir(M1, GPIO_OUT);
-    gpio_put(M1, true);
-    gpio_init(M2);
-    gpio_set_dir(M2, GPIO_OUT);
-    gpio_put(M2, true);
-    gpio_init(M3);
-    gpio_set_dir(M3, GPIO_OUT);
-    gpio_put(M3, true);
-    gpio_init(M4);
-    gpio_set_dir(M4, GPIO_OUT);
-    gpio_put(M4, true);
-    gpio_init(M5);
-    gpio_set_dir(M5, GPIO_OUT);
-    gpio_put(M5, true);
-    gpio_init(M6);
-    gpio_set_dir(M6, GPIO_OUT);
-    gpio_put(M6, true);
-    gpio_init(M7);
-    gpio_set_dir(M7, GPIO_OUT);
-    gpio_put(M7, true);
-
-    // Initialize tone matrix data inputs
-    gpio_init(D0);
-    gpio_set_dir(D0, GPIO_IN);
-    gpio_init(D1);
-    gpio_set_dir(D1, GPIO_IN);
-    gpio_init(D2);
-    gpio_set_dir(D2, GPIO_IN);
-    gpio_init(D3);
-    gpio_set_dir(D3, GPIO_IN);
-    gpio_init(D4);
-    gpio_set_dir(D4, GPIO_IN);
-    gpio_init(D5);
-    gpio_set_dir(D5, GPIO_IN);
-    gpio_init(D6);
-    gpio_set_dir(D6, GPIO_IN);
-    gpio_init(D7);
-    gpio_set_dir(D7, GPIO_IN);
-
-    // ADC
-    adc_init();
-    // Make sure GPIO is high-impedance, no pullups etc
-    adc_gpio_init(ADC_1);
-    adc_gpio_init(ADC_2);
-    adc_gpio_init(ADC_3);
+    init_mcp(i2c, MCP_ADD);
 
     init_state(&act_state, &main_settings);
     init_state(&last_state, &main_settings);

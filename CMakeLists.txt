@@ -42,9 +42,9 @@ target_link_libraries(${PROJECT_NAME}
     PRIVATE    
     pico_stdlib
     pico_cyw43_arch_lwip_poll
-    hardware_adc
     tinyusb_device
     tinyusb_board
     pico_multicore
     pico_unique_id
+    hardware_i2c
 )

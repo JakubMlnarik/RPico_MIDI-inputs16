@@ -1,31 +1,42 @@
 #include "utils.h"
 
-uint8_t ma_pot0(uint8_t val)
-{
-    static double last_val;
-    double calculated = POT_MA_FACTOR*val + (1-POT_MA_FACTOR)*last_val;
-    last_val = calculated;
-    if (calculated < 0) return (uint8_t)0;
-    else if (calculated > 127) return (uint8_t)127;
-    else return (uint8_t)calculated;
+// Write 1 byte to the specified register
+int reg_write(  i2c_inst_t *i2c,
+                const uint addr,
+                const uint8_t reg,
+                uint8_t value) {
+    uint8_t msg[2];
+
+    msg[0] = reg;
+    msg[1] = value;
+
+    // Write data to register(s) over I2C
+    return i2c_write_blocking(i2c, addr, msg, 2, false);
 }
-uint8_t ma_pot1(uint8_t val)
-{
-    static double last_val;
-    double calculated = POT_MA_FACTOR*val + (1-POT_MA_FACTOR)*last_val;
-    last_val = calculated;
-    if (calculated < 0) return (uint8_t)0;
-    else if (calculated > 127) return (uint8_t)127;
-    else return (uint8_t)calculated;
+
+// Read byte from the register
+int reg_read(  i2c_inst_t *i2c,
+                const uint addr,
+                const uint8_t reg,
+                uint8_t *byte) {
+    // Read data from register(s) over I2C
+    i2c_write_blocking(i2c, addr, &reg, 1, true);
+
+    return i2c_read_blocking(i2c, addr, byte, 1, false);
 }
-uint8_t ma_pot2(uint8_t val)
-{
-    static double last_val;
-    double calculated = POT_MA_FACTOR*val + (1-POT_MA_FACTOR)*last_val;
-    last_val = calculated;
-    if (calculated < 0) return (uint8_t)0;
-    else if (calculated > 127) return (uint8_t)127;
-    else return (uint8_t)calculated;
+
+int init_mcp(i2c_inst_t *i2c, const uint addr) {
+    //port A as inputs
+    reg_write(i2c, addr, IODIRA, 0xff);
+
+    //input pullups
+    reg_write(i2c, addr, GPPUA, 0xff);
+
+    //port B as inputs
+    reg_write(i2c, addr, IODIRB, 0xff);
+
+    //input pullups
+    reg_write(i2c, addr, GPPUB, 0xff);
 }
 
 bool send_midi_msg(uint8_t *data, int no_bytes, critical_section_t *cs, queue_t *buff) {
@@ -37,35 +48,6 @@ bool send_midi_msg(uint8_t *data, int no_bytes, critical_section_t *cs, queue_t 
     critical_section_exit(cs);
 
     return retval;
-}
-
-uint8_t get_pot_position(int adc_num) {
-    adc_select_input(adc_num); 
-    int pos = (int)(adc_read()*128.0f/4096.0f);
-
-    if (adc_num == 0) return ma_pot0(pos);
-    else if (adc_num == 1) return ma_pot1(pos);
-    else if (adc_num == 2) return ma_pot2(pos);
-}
-
-void scan_data_pins(bool *dest, int offset) {
-    *(dest + offset) = gpio_get(D0);
-    *(dest + offset + 1) = gpio_get(D1);
-    *(dest + offset + 2) = gpio_get(D2);
-    *(dest + offset + 3) = gpio_get(D3);
-    *(dest + offset + 4) = gpio_get(D4);
-    *(dest + offset + 5) = gpio_get(D5);
-    *(dest + offset + 6) = gpio_get(D6);
-    *(dest + offset + 7) = gpio_get(D7);
-}
-
-bool send_pot_midi(int adc_num, int channel, uint8_t value, critical_section_t *cs, queue_t *buff) {
-    uint8_t msg[3];
-    msg[0] = 0xB0 | channel; // CC message
-    msg[1] = adc_num;
-    msg[2] = value;
-
-    return send_midi_msg(msg, 3, cs, buff);
 }
 
 bool send_note_on(uint8_t channel, uint8_t midi_base, int input, critical_section_t *cs, queue_t *buff) {

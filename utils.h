@@ -4,11 +4,12 @@
 #include "definitions.h"
 #include "settings.h"
 
-extern void scan_data_pins(bool *dest, int offset);
+extern int init_mcp(i2c_inst_t *i2c, const uint addr);
 
-extern uint8_t get_pot_position(int adc_num);
-
-extern bool send_pot_midi(int adc_num, int channel, uint8_t value, critical_section_t *cs, queue_t *buff);
+extern int reg_read(  i2c_inst_t *i2c,
+                const uint addr,
+                const uint8_t reg,
+                uint8_t *byte);
 
 extern int get_channel();
 
