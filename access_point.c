@@ -118,7 +118,12 @@ void update_html_page() {
 
     // Title
     strcat(html_page, "\
-        <h1>MIDI_scanner64<span>Firmware version: xxx</span></h1>\
+        <h1>"
+    );
+    strcat(html_page, DEV_NAME);
+    strcat(html_page, "<span>Firmware version: ");
+    strcat(html_page, FW_VERSION);
+    strcat(html_page, "</span></h1>\
             <form>\
                 <div class=\"section\">General</div>"
     );
@@ -219,71 +224,8 @@ void update_html_page() {
         );
     }
 
-    // Analogs
     strcat(html_page, "\
-        <div class=\"section\">Analog inputs</div>\
-        <div class=\"inner-wrap\">"
-    );
-
-    sprintf(an_midi_ch_html_str, "<label> Midi channel <input type=\"number\" name=\"a_m_ch\" min=\"1\" max=\"16\" value=%d> </label>", p_settings->a_m_ch+1);
-    strcat(html_page, an_midi_ch_html_str);
-
-    // A1
-    if (p_settings->a1_en == 1) {
-        strcat(html_page, "\
-            <label> A1 <select name=\"a1_en\">\
-                <option value=\"0\"> Disabled </option>\
-                <option value=\"1\" selected> Enabled </option>\
-            </select></label>"
-        );
-    }
-    else {
-        strcat(html_page, "\
-            <label> A1 <select name=\"a1_en\">\
-                <option value=\"0\" selected> Disabled </option>\
-                <option value=\"1\"> Enabled </option>\
-            </select></label>"
-        );
-    }
-
-    // A2
-    if (p_settings->a2_en == 1) {
-        strcat(html_page, "\
-            <label> A2 <select name=\"a2_en\">\
-                <option value=\"0\"> Disabled </option>\
-                <option value=\"1\" selected> Enabled </option>\
-            </select></label>"
-        );
-    }
-    else {
-        strcat(html_page, "\
-            <label> A2 <select name=\"a2_en\">\
-                <option value=\"0\" selected> Disabled </option>\
-                <option value=\"1\"> Enabled </option>\
-            </select></label>"
-        );
-    }
-
-    // A3
-    if (p_settings->a3_en == 1) {
-        strcat(html_page, "\
-            <label> A3 <select name=\"a3_en\">\
-                <option value=\"0\"> Disabled </option>\
-                <option value=\"1\" selected> Enabled </option>\
-            </select></label>"
-        );
-    }
-    else {
-        strcat(html_page, "\
-            <label> A3 <select name=\"a3_en\">\
-                <option value=\"0\" selected> Disabled </option>\
-                <option value=\"1\"> Enabled </option>\
-            </select></label>"
-        );
-    }
-
-    strcat(html_page, "\
-        </div><div class=\"button-section\">\
+        <div class=\"button-section\">\
             <input type=\"submit\" value=\"Save settings\">\
             <a href=\"?default=1\">\
                 <input type=\"button\" value=\"Set default values\" />\
@@ -330,11 +272,6 @@ static err_t tcp_server_sent(void *arg, struct tcp_pcb *pcb, u16_t len) {
 static int test_server_content(const char *request, const char *params, char *result, size_t max_result_len) {
     int len = 0;
     if (strncmp(request, SET_URL_SEGMENT, sizeof(SET_URL_SEGMENT) - 1) == 0) {
-        // Get the state of the led
-        bool value;
-        cyw43_gpio_get(&cyw43_state, LED_GPIO, &value);
-        int led_state = value;
-
         // See if the user changed it
         if (params) {
             int fast_midi_param;
@@ -344,15 +281,11 @@ static int test_server_content(const char *request, const char *params, char *re
             int in2_m_ch;
             int in2_inv;
             int in2_base_m;
-            int a_m_ch;
-            int a1_en;
-            int a2_en;
-            int a3_en;
 
-            int no_params = sscanf(params, "fast_midi=%d&in1_m_ch=%d&in1_base_m=%d&in1_inv=%d&in2_m_ch=%d&in2_base_m=%d&in2_inv=%d&a_m_ch=%d&a1_en=%d&a2_en=%d&a3_en=%d",\
-                &fast_midi_param, &in1_m_ch, &in1_base_m, &in1_inv, &in2_m_ch, &in2_base_m, &in2_inv, &a_m_ch, &a1_en, &a2_en, &a3_en);
+            int no_params = sscanf(params, "fast_midi=%d&in1_m_ch=%d&in1_base_m=%d&in1_inv=%d&in2_m_ch=%d&in2_base_m=%d&in2_inv=%d",\
+                &fast_midi_param, &in1_m_ch, &in1_base_m, &in1_inv, &in2_m_ch, &in2_base_m, &in2_inv);
 
-            if (no_params == 11) {
+            if (no_params == 7) {
                 if (fast_midi_param>=0 && fast_midi_param<=1) p_settings->fast_midi = (uint8_t)fast_midi_param;
                 if (in1_m_ch>=1 && in1_m_ch<=16) p_settings->in1_m_ch = (uint8_t)in1_m_ch-1;
                 if (in1_inv>=0 && in1_inv<=1) p_settings->in1_inv = (uint8_t)in1_inv;
@@ -360,10 +293,6 @@ static int test_server_content(const char *request, const char *params, char *re
                 if (in2_m_ch>=1 && in2_m_ch<=16) p_settings->in2_m_ch = (uint8_t)in2_m_ch-1;
                 if (in2_inv>=0 && in2_inv<=1) p_settings->in2_inv = (uint8_t)in2_inv;
                 if (in2_base_m>=0 && in2_base_m<=95) p_settings->in2_base_m = (uint8_t)in2_base_m;
-                if (a_m_ch>=1 && a_m_ch<=16) p_settings->a_m_ch = (uint8_t)a_m_ch-1;
-                if (a1_en>=0 && a1_en<=1) p_settings->a1_en = (uint8_t)a1_en;
-                if (a2_en>=0 && a2_en<=1) p_settings->a2_en = (uint8_t)a2_en;
-                if (a3_en>=0 && a3_en<=1) p_settings->a3_en = (uint8_t)a3_en;
 
                 save_settings(p_settings);
             }
@@ -377,10 +306,6 @@ static int test_server_content(const char *request, const char *params, char *re
                 p_settings->in2_m_ch = IN2_M_CH_DEF;
                 p_settings->in2_inv = IN2_INV_DEF;
                 p_settings->in2_base_m = IN2_BASE_M_DEF;
-                p_settings->a_m_ch = A_M_CH_DEF;
-                p_settings->a1_en = A1_EN_DEF;
-                p_settings->a2_en = A2_EN_DEF;
-                p_settings->a3_en = A3_EN_DEF;
 
                 save_settings(p_settings);
             }            
@@ -388,12 +313,6 @@ static int test_server_content(const char *request, const char *params, char *re
         // Generate result
         update_html_page();
         len = snprintf(result, max_result_len, html_page);
-        // Generate result
-        // if (led_state) {
-        //     len = snprintf(result, max_result_len, LED_TEST_BODY, "ON", 0, "OFF", "", "selected");
-        // } else {
-        //     len = snprintf(result, max_result_len, LED_TEST_BODY, "OFF", 1, "ON", "selected", "");
-        // }
     }
     return len;
 }
@@ -544,7 +463,7 @@ int wifi_ap_proc(SETTINGS *set) {
 
     const char *password = NULL;
 
-    cyw43_arch_enable_ap_mode(AP_NAME, password, CYW43_AUTH_WPA2_AES_PSK);
+    cyw43_arch_enable_ap_mode(DEV_NAME, password, CYW43_AUTH_WPA2_AES_PSK);
 
     ip4_addr_t mask;
     IP4_ADDR(ip_2_ip4(&state->gw), 192, 168, 4, 1);
@@ -558,7 +477,7 @@ int wifi_ap_proc(SETTINGS *set) {
     dns_server_t dns_server;
     dns_server_init(&dns_server, &state->gw);
 
-    if (!tcp_server_open(state, AP_NAME)) {
+    if (!tcp_server_open(state, DEV_NAME)) {
         return 1;
     }
 

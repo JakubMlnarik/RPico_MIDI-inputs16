@@ -12,6 +12,7 @@
 #include "dhcpserver.h"
 #include "dnsserver.h"
 
+#include "definitions.h"
 #include "settings.h"
 
 #define TCP_PORT 80
@@ -22,7 +23,6 @@
 #define SET_URL_SEGMENT "/settings"
 #define LED_GPIO 0
 #define HTTP_RESPONSE_REDIRECT "HTTP/1.1 302 Redirect\nLocation: http://%s" SET_URL_SEGMENT "\n\n"
-#define AP_NAME "MIDI_scanner64"
 
 typedef struct TCP_SERVER_T_ {
     struct tcp_pcb *server_pcb;

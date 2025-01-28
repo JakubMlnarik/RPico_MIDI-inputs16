@@ -31,11 +31,6 @@ typedef struct SETTINGS_ {
     uint8_t in2_m_ch;
     uint8_t in2_inv;
     uint8_t in2_base_m;
-    
-    uint8_t a_m_ch;
-    uint8_t a1_en;
-    uint8_t a2_en;
-    uint8_t a3_en;
 } SETTINGS;
 
 // default values
@@ -50,10 +45,6 @@ typedef struct SETTINGS_ {
 #define IN2_M_CH_DEF 0
 #define IN2_INV_DEF 0
 #define IN2_BASE_M_DEF 68
-#define A_M_CH_DEF 0
-#define A1_EN_DEF 0
-#define A2_EN_DEF 0
-#define A3_EN_DEF 0
 
 extern void load_settings(SETTINGS *set);
 extern void save_settings(SETTINGS *set);

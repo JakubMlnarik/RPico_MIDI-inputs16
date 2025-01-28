@@ -15,6 +15,12 @@
 #include "hardware/i2c.h"
 
 ////////////////////////
+// Device name, fw version
+#define DEV_NAME "MIDI_inputs16"
+#define FW_VERSION "1.0"
+////////////////////////
+
+////////////////////////
 // GPIO
 ////////////////////////
 

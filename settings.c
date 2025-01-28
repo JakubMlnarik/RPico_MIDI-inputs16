@@ -33,10 +33,6 @@ void load_settings(SETTINGS *set) {
             set->in2_m_ch = IN2_M_CH_DEF;
             set->in2_inv = IN2_INV_DEF;
             set->in2_base_m = IN2_BASE_M_DEF;
-            set->a_m_ch = A_M_CH_DEF;
-            set->a1_en = A1_EN_DEF;
-            set->a2_en = A2_EN_DEF;
-            set->a3_en = A3_EN_DEF;
 
             save_settings(set);
     }
