@@ -353,11 +353,11 @@ static int test_server_content(const char *request, const char *params, char *re
             if (strstr(params, "default=1") != NULL) {
                 p_settings->fast_midi = FAST_MIDI_DEF;
                 p_settings->in1_m_ch = IN1_M_CH_DEF;
-                p_settings->in1_m_type = IN1_M_TYPE;
+                p_settings->in1_m_type = IN1_M_TYPE_DEF;
                 p_settings->in1_inv = IN1_INV_DEF;
                 p_settings->in1_base_m = IN1_BASE_M_DEF;
                 p_settings->in2_m_ch = IN2_M_CH_DEF;
-                p_settings->in2_m_type = IN2_M_TYPE;
+                p_settings->in2_m_type = IN2_M_TYPE_DEF;
                 p_settings->in2_inv = IN2_INV_DEF;
                 p_settings->in2_base_m = IN2_BASE_M_DEF;
 

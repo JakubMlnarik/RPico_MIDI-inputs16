@@ -42,12 +42,11 @@ typedef struct SETTINGS_ {
 #define MAGIC_4 4
 #define FAST_MIDI_DEF 0
 #define IN1_M_CH_DEF 0
-#define IN1_M_TYPE 1
-#define IN1_M_CH_DEF 0
+#define IN1_M_TYPE_DEF 1
 #define IN1_INV_DEF 0
 #define IN1_BASE_M_DEF 0
 #define IN2_M_CH_DEF 0
-#define IN2_M_TYPE 1
+#define IN2_M_TYPE_DEF 1
 #define IN2_INV_DEF 0
 #define IN2_BASE_M_DEF 8
 
