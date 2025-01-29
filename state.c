@@ -37,25 +37,41 @@ void process_state(struct State *actual, struct State *last, SETTINGS *set, crit
     // Header 1
     for (int i=0; i<NO_HEADER_INPUTS; i++) {
         if ( (actual->header1[i]==0) && (last->header1[i]==1) ) { // falling edge
-            if (set->in1_inv == 0) {
+            if (set->in1_m_type == 0 && set->in1_inv == 0) {
                 if ( send_note_on(set->in1_m_ch, set->in1_base_m, i, cs, buff) == true ) {
                     last->header1[i] = 0;
                 }
             }
-            else {
+            else if (set->in1_m_type == 0 && set->in1_inv == 1) {
                 if ( send_note_off(set->in1_m_ch, set->in1_base_m, i, cs, buff) == true ) {
                     last->header1[i] = 0;
                 }
             }
+            else if (set->in1_m_type == 1 && set->in1_inv == 0) { // prg change
+                if ( send_prg_change(set->in1_m_ch, set->in1_base_m, i, cs, buff) == true ) {
+                    last->header1[i] = 0;
+                }
+            }
+            else if (set->in1_m_type == 1 && set->in1_inv == 1) {
+                last->header1[i] = 0;
+            }
         }
         else if ( (actual->header1[i]==1) && (last->header1[i]==0) ) { // rising edge
-            if (set->in1_inv == 0) {
+            if (set->in1_m_type == 0 && set->in1_inv == 0) {
                 if ( send_note_off(set->in1_m_ch, set->in1_base_m, i, cs, buff) == true ) {
                     last->header1[i] = 1;
                 }
             }
-            else {
+            else if (set->in1_m_type == 0 && set->in1_inv == 1) {
                 if ( send_note_on(set->in1_m_ch, set->in1_base_m, i, cs, buff) == true ) {
+                    last->header1[i] = 1;
+                }
+            }
+            else if (set->in1_m_type == 1 && set->in1_inv == 0) { // prg change
+                last->header1[i] = 1;
+            }
+            else if (set->in1_m_type == 1 && set->in1_inv == 1) {
+                if ( send_prg_change(set->in1_m_ch, set->in1_base_m, i, cs, buff) == true ) {
                     last->header1[i] = 1;
                 }
             }
@@ -65,25 +81,41 @@ void process_state(struct State *actual, struct State *last, SETTINGS *set, crit
     // Header 2
     for (int i=0; i<NO_HEADER_INPUTS; i++) {
         if ( (actual->header2[i]==0) && (last->header2[i]==1) ) { // falling edge
-            if (set->in2_inv == 0) {
+            if (set->in2_m_type == 0 && set->in2_inv == 0) {
                 if ( send_note_on(set->in2_m_ch, set->in2_base_m, i, cs, buff) == true ) {
                     last->header2[i] = 0;
                 }
             }
-            else {
+            else if (set->in2_m_type == 0 && set->in2_inv == 1) {
                 if ( send_note_off(set->in2_m_ch, set->in2_base_m, i, cs, buff) == true ) {
                     last->header2[i] = 0;
                 }
             }
+            else if (set->in2_m_type == 1 && set->in2_inv == 0) { // prg change
+                if ( send_prg_change(set->in2_m_ch, set->in2_base_m, i, cs, buff) == true ) {
+                    last->header2[i] = 0;
+                }
+            }
+            else if (set->in2_m_type == 1 && set->in2_inv == 1) {
+                last->header2[i] = 0;
+            }
         }
         else if ( (actual->header2[i]==1) && (last->header2[i]==0) ) { // rising edge
-            if (set->in2_inv == 0) {
+            if (set->in2_m_type == 0 && set->in2_inv == 0) {
                 if ( send_note_off(set->in2_m_ch, set->in2_base_m, i, cs, buff) == true ) {
                     last->header2[i] = 1;
                 }
             }
-            else {
+            else if (set->in2_m_type == 0 && set->in2_inv == 1) {
                 if ( send_note_on(set->in2_m_ch, set->in2_base_m, i, cs, buff) == true ) {
+                    last->header2[i] = 1;
+                }
+            }
+            else if (set->in2_m_type == 1 && set->in2_inv == 0) { // prg change
+                last->header2[i] = 1;
+            }
+            else if (set->in2_m_type == 1 && set->in2_inv == 1) {
+                if ( send_prg_change(set->in2_m_ch, set->in2_base_m, i, cs, buff) == true ) {
                     last->header2[i] = 1;
                 }
             }

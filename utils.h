@@ -16,4 +16,7 @@ extern int get_channel();
 extern bool send_note_on(uint8_t channel, uint8_t midi_base, int tone, critical_section_t *cs, queue_t *buff);
 
 extern bool send_note_off(uint8_t channel, uint8_t midi_base, int tone, critical_section_t *cs, queue_t *buff);
+
+extern bool send_prg_change(uint8_t channel, uint8_t midi_base, int input, critical_section_t *cs, queue_t *buff);
+
 #endif

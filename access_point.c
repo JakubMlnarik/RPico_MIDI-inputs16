@@ -159,19 +159,43 @@ void update_html_page() {
     );
 
     sprintf(in1_midi_ch_html_str, "<label> Midi channel <input type=\"number\" name=\"in1_m_ch\" min=\"1\" max=\"16\" value=%d> </label>", p_settings->in1_m_ch+1);
-    sprintf(in1_base_note_html_str, "<label> Base MIDI note (first input's MIDI note) <input type=\"number\" name=\"in1_base_m\" min=\"0\" max=\"95\" value=%d> </label>", p_settings->in1_base_m);
-
     strcat(html_page, in1_midi_ch_html_str);
+
+    // message type
+    if (p_settings->in1_m_type == 0) {
+        strcat(html_page, "\
+            <label>\
+                Message type\
+                <select name=\"in1_m_type\">\
+                    <option value=\"0\" selected> NOTE ON / NOTE OFF </option>\
+                    <option value=\"1\"> PROGRAM CHANGE </option>\
+                </select>\
+            </label>"
+        );
+    }
+    else {
+        strcat(html_page, "\
+            <label>\
+                Message type\
+                <select name=\"in1_m_type\">\
+                    <option value=\"0\"> NOTE ON / NOTE OFF </option>\
+                    <option value=\"1\" selected> PROGRAM CHANGE </option>\
+                </select>\
+            </label>"
+        );
+    }
+
+    sprintf(in1_base_note_html_str, "<label> Base MIDI number (first input's MIDI note or ProgCh number) <input type=\"number\" name=\"in1_base_m\" min=\"0\" max=\"119\" value=%d> </label>", p_settings->in1_base_m);
     strcat(html_page, in1_base_note_html_str);
 
     // inverting
     if (p_settings->in1_inv == 1) {
         strcat(html_page, "\
             <label>\
-                Invert NOTE ON / NOTE OFF\
+                Invert inputs\
                 <select name=\"in1_inv\">\
-                    <option value=\"0\"> NOTE ON when an input is activated </option>\
-                    <option value=\"1\" selected> NOTE ON when an input is deactivated </option>\
+                    <option value=\"0\"> NOTE ON (ProgChange) when an input is activated </option>\
+                    <option value=\"1\" selected> NOTE ON (ProgChange) when an input is deactivated </option>\
                 </select>\
             </label></div>"
         );
@@ -179,10 +203,10 @@ void update_html_page() {
     else {
         strcat(html_page, "\
             <label>\
-                Invert NOTE ON / NOTE OFF\
+                Invert inputs\
                 <select name=\"in1_inv\">\
-                    <option value=\"0\" selected> NOTE ON when an input is activated </option>\
-                    <option value=\"1\"> NOTE ON when an input is deactivated </option>\
+                    <option value=\"0\" selected> NOTE ON (ProgChange) when an input is activated </option>\
+                    <option value=\"1\"> NOTE ON (ProgChange) when an input is deactivated </option>\
                 </select>\
             </label></div>"
         );
@@ -195,19 +219,43 @@ void update_html_page() {
     );
 
     sprintf(in2_midi_ch_html_str, "<label> Midi channel <input type=\"number\" name=\"in2_m_ch\" min=\"1\" max=\"16\" value=%d> </label>", p_settings->in2_m_ch+1);
-    sprintf(in2_base_note_html_str, "<label> Base MIDI note (first input's MIDI note) <input type=\"number\" name=\"in2_base_m\" min=\"0\" max=\"95\" value=%d> </label>", p_settings->in2_base_m);
-
     strcat(html_page, in2_midi_ch_html_str);
+
+    // message type
+    if (p_settings->in2_m_type == 0) {
+        strcat(html_page, "\
+            <label>\
+                Message type\
+                <select name=\"in2_m_type\">\
+                    <option value=\"0\" selected> NOTE ON / NOTE OFF </option>\
+                    <option value=\"1\"> PROGRAM CHANGE </option>\
+                </select>\
+            </label>"
+        );
+    }
+    else {
+        strcat(html_page, "\
+            <label>\
+                Message type\
+                <select name=\"in2_m_type\">\
+                    <option value=\"0\"> NOTE ON / NOTE OFF </option>\
+                    <option value=\"1\" selected> PROGRAM CHANGE </option>\
+                </select>\
+            </label>"
+        );
+    }
+
+    sprintf(in2_base_note_html_str, "<label>Base MIDI number (first input's MIDI note or ProgCh number) <input type=\"number\" name=\"in2_base_m\" min=\"0\" max=\"119\" value=%d> </label>", p_settings->in2_base_m);
     strcat(html_page, in2_base_note_html_str);
 
     // inverting
     if (p_settings->in2_inv == 1) {
         strcat(html_page, "\
             <label>\
-                Invert NOTE ON / NOTE OFF\
+                Invert inputs\
                 <select name=\"in2_inv\">\
-                    <option value=\"0\"> NOTE ON when an input is activated </option>\
-                    <option value=\"1\" selected> NOTE ON when an input is deactivated </option>\
+                    <option value=\"0\"> NOTE ON (ProgChange) when an input is activated </option>\
+                    <option value=\"1\" selected> NOTE ON (ProgChange) when an input is deactivated </option>\
                 </select>\
             </label></div>"
         );
@@ -215,10 +263,10 @@ void update_html_page() {
     else {
         strcat(html_page, "\
             <label>\
-                Invert NOTE ON / NOTE OFF\
+                Invert inputs\
                 <select name=\"in2_inv\">\
-                    <option value=\"0\" selected> NOTE ON when an input is activated </option>\
-                    <option value=\"1\"> NOTE ON when an input is deactivated </option>\
+                    <option value=\"0\" selected> NOTE ON (ProgChange) when an input is activated </option>\
+                    <option value=\"1\"> NOTE ON (ProgChange) when an input is deactivated </option>\
                 </select>\
             </label></div>"
         );
@@ -276,23 +324,27 @@ static int test_server_content(const char *request, const char *params, char *re
         if (params) {
             int fast_midi_param;
             int in1_m_ch;
+            int in1_m_type;
             int in1_inv;
             int in1_base_m;
             int in2_m_ch;
+            int in2_m_type;
             int in2_inv;
             int in2_base_m;
 
-            int no_params = sscanf(params, "fast_midi=%d&in1_m_ch=%d&in1_base_m=%d&in1_inv=%d&in2_m_ch=%d&in2_base_m=%d&in2_inv=%d",\
-                &fast_midi_param, &in1_m_ch, &in1_base_m, &in1_inv, &in2_m_ch, &in2_base_m, &in2_inv);
+            int no_params = sscanf(params, "fast_midi=%d&in1_m_ch=%d&in1_m_type=%d&in1_base_m=%d&in1_inv=%d&in2_m_ch=%d&in2_m_type=%d&in2_base_m=%d&in2_inv=%d",\
+                &fast_midi_param, &in1_m_ch, &in1_m_type, &in1_base_m, &in1_inv, &in2_m_ch, &in2_m_type, &in2_base_m, &in2_inv);
 
-            if (no_params == 7) {
+            if (no_params == 9) {
                 if (fast_midi_param>=0 && fast_midi_param<=1) p_settings->fast_midi = (uint8_t)fast_midi_param;
                 if (in1_m_ch>=1 && in1_m_ch<=16) p_settings->in1_m_ch = (uint8_t)in1_m_ch-1;
+                if (in1_m_type>=0 && in1_m_type<=1) p_settings->in1_m_type = (uint8_t)in1_m_type;
                 if (in1_inv>=0 && in1_inv<=1) p_settings->in1_inv = (uint8_t)in1_inv;
-                if (in1_base_m>=0 && in1_base_m<=95) p_settings->in1_base_m = (uint8_t)in1_base_m;
+                if (in1_base_m>=0 && in1_base_m<=119) p_settings->in1_base_m = (uint8_t)in1_base_m;
                 if (in2_m_ch>=1 && in2_m_ch<=16) p_settings->in2_m_ch = (uint8_t)in2_m_ch-1;
+                if (in2_m_type>=0 && in2_m_type<=1) p_settings->in2_m_type = (uint8_t)in2_m_type;
                 if (in2_inv>=0 && in2_inv<=1) p_settings->in2_inv = (uint8_t)in2_inv;
-                if (in2_base_m>=0 && in2_base_m<=95) p_settings->in2_base_m = (uint8_t)in2_base_m;
+                if (in2_base_m>=0 && in2_base_m<=119) p_settings->in2_base_m = (uint8_t)in2_base_m;
 
                 save_settings(p_settings);
             }
@@ -301,9 +353,11 @@ static int test_server_content(const char *request, const char *params, char *re
             if (strstr(params, "default=1") != NULL) {
                 p_settings->fast_midi = FAST_MIDI_DEF;
                 p_settings->in1_m_ch = IN1_M_CH_DEF;
+                p_settings->in1_m_type = IN1_M_TYPE;
                 p_settings->in1_inv = IN1_INV_DEF;
                 p_settings->in1_base_m = IN1_BASE_M_DEF;
                 p_settings->in2_m_ch = IN2_M_CH_DEF;
+                p_settings->in2_m_type = IN2_M_TYPE;
                 p_settings->in2_inv = IN2_INV_DEF;
                 p_settings->in2_base_m = IN2_BASE_M_DEF;
 

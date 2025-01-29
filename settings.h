@@ -25,10 +25,12 @@ typedef struct SETTINGS_ {
     uint8_t fast_midi;
 
     uint8_t in1_m_ch;
+    uint8_t in1_m_type; // note on(off)/Program Change
     uint8_t in1_inv;
     uint8_t in1_base_m;
     
     uint8_t in2_m_ch;
+    uint8_t in2_m_type;
     uint8_t in2_inv;
     uint8_t in2_base_m;
 } SETTINGS;
@@ -40,11 +42,14 @@ typedef struct SETTINGS_ {
 #define MAGIC_4 4
 #define FAST_MIDI_DEF 0
 #define IN1_M_CH_DEF 0
+#define IN1_M_TYPE 1
+#define IN1_M_CH_DEF 0
 #define IN1_INV_DEF 0
-#define IN1_BASE_M_DEF 36
+#define IN1_BASE_M_DEF 0
 #define IN2_M_CH_DEF 0
+#define IN2_M_TYPE 1
 #define IN2_INV_DEF 0
-#define IN2_BASE_M_DEF 68
+#define IN2_BASE_M_DEF 8
 
 extern void load_settings(SETTINGS *set);
 extern void save_settings(SETTINGS *set);

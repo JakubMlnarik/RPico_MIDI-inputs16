@@ -114,6 +114,13 @@
                 <div class="section">Input header 1</div>
                 <div class="inner-wrap">
                     <label> Midi channel <input type="number" name="in1_m_ch" min="1" max="16"> </label>
+                    <label>
+                        Message type
+                        <select name="in1_m_type">
+                            <option value="0" > NOTE ON/NOTE OFF </option>
+                            <option value="1"> PROGRAM CHANGE </option>
+                        </select>
+                    </label>
                     <label> Base MIDI note (first input's MIDI note) <input type="number" name="in1_base_m" min="0" max="95"> </label>
                     <label>
                         Invert NOTE ON / NOTE OFF

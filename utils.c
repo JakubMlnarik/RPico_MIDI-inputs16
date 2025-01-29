@@ -68,3 +68,11 @@ bool send_note_off(uint8_t channel, uint8_t midi_base, int input, critical_secti
     return send_midi_msg(msg, 3, cs, buff);
 }
 
+bool send_prg_change(uint8_t channel, uint8_t midi_base, int input, critical_section_t *cs, queue_t *buff) {
+    uint8_t msg[2];
+    msg[0] = 0xC0 | channel; // Program Change
+    msg[1] = midi_base + input;
+
+    return send_midi_msg(msg, 2, cs, buff);
+}
+
