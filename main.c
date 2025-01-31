@@ -135,6 +135,15 @@ int main() {
     while (true) {
         tud_task(); // tinyusb device task
 
+        // The MIDI interface always creates input and output port/jack descriptors
+        // regardless of these being used or not. Therefore incoming traffic should be read
+        // (possibly just discarded) to avoid the sender blocking in IO
+        while (tud_midi_available()) {
+            uint8_t byte;
+            tud_midi_stream_read(&byte, 1);
+            led_on_timer = 0;
+        }
+
         // send all midi from the safe queue to tx
         while (!queue_is_empty(&shared_buff)) {
             uint8_t byte;
